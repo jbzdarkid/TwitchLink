@@ -36,8 +36,8 @@ Instance = App(Config.APP_ROOT, sys.argv)
 from Services.NetworkAccessManager import NetworkAccessManager as _NetworkAccessManager
 NetworkAccessManager = _NetworkAccessManager(parent=Instance)
 
-from Services.Twitch.GQL.TwitchGQLAPI import TwitchGQL as _TwitchGQL
-TwitchGQL = _TwitchGQL(parent=Instance)
+from Services.Twitch.Gql.TwitchGqlAPI import TwitchGql as _TwitchGql
+TwitchGql = _TwitchGql(parent=Instance)
 
 from Services.Translator.Translator import Translator as _Translator
 Translator = _Translator(parent=Instance)

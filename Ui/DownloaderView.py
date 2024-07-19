@@ -1,8 +1,8 @@
 from Core.Ui import *
 from Services.Messages import Messages
 from Services import ContentManager
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL.TwitchGQLModels import Channel, Stream, Video, Clip
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql.TwitchGqlModels import Channel, Stream, Video, Clip
 from Services.Twitch.Playback import TwitchPlaybackGenerator
 from Download.DownloadInfo import DownloadInfo
 from Download.Downloader import TwitchDownloader
@@ -153,7 +153,7 @@ class DownloaderView(QtWidgets.QWidget):
                 Utils.info(*Messages.INFO.NETWORK_ERROR, parent=self)
             elif isinstance(self._exception, Exceptions.ProcessError):
                 Utils.info("process-error", "#Process exited unexpectedly.\n\nPossible Causes\n\n* Corruption of the original file\n* Invalid crop range\n* Too long or invalid filename or path\n* Out of memory\n* Out of storage capacity\n* Lack of device performance\n* Needs permission to perform this action\n\nIf the error persists, try Run as administrator.", parent=self)
-            elif isinstance(self._exception, TwitchGQLAPI.Exceptions.AuthorizationError):
+            elif isinstance(self._exception, TwitchGqlAPI.Exceptions.AuthorizationError):
                 if App.Account.isLoggedIn():
                     Utils.info(*Messages.INFO.AUTHENTICATION_ERROR, parent=self)
                 else:

@@ -1,8 +1,8 @@
 from Core.Ui import *
 from Services.Messages import Messages
 from Services.PartnerContent.PartnerContentInFeedWidgetListViewer import PartnerContentInFeedWidgetListViewer
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql import TwitchGqlModels
 
 
 class SearchResult(QtWidgets.QWidget):
@@ -33,7 +33,7 @@ class SearchResult(QtWidgets.QWidget):
         ("all", "ALL_TIME")
     ]
 
-    def __init__(self, data: TwitchGQLModels.Channel | TwitchGQLModels.Video | TwitchGQLModels.Clip, parent: QtWidgets.QWidget | None = None):
+    def __init__(self, data: TwitchGqlModels.Channel | TwitchGqlModels.Video | TwitchGqlModels.Clip, parent: QtWidgets.QWidget | None = None):
         super().__init__(parent=parent)
         self.data = data
         self._ui = UiLoader.load("searchResult", self)
@@ -74,7 +74,7 @@ class SearchResult(QtWidgets.QWidget):
         return self._loading
 
     def setup(self) -> None:
-        if type(self.data) == TwitchGQLModels.Channel:
+        if type(self.data) == TwitchGqlModels.Channel:
             self.showChannel(self.data)
             self._ui.searchType.addItems([T(item[0]) for item in self.SEARCH_TYPES])
             self._ui.searchType.setCurrentIndex(0)
@@ -90,7 +90,7 @@ class SearchResult(QtWidgets.QWidget):
         else:
             self._ui.tabWidget.setCurrentIndex(1)
             self._ui.tabWidget.tabBar().hide()
-            if type(self.data) == TwitchGQLModels.Video:
+            if type(self.data) == TwitchGqlModels.Video:
                 videoType = T("video")
                 videoId = self.data.id
             else:
@@ -104,19 +104,19 @@ class SearchResult(QtWidgets.QWidget):
 
     def refreshChannel(self) -> None:
         self._ui.refreshChannelButton.setEnabled(False)
-        App.TwitchGQL.getChannel(login=self.channel.login).finished.connect(self._processChannelRefreshResult)
+        App.TwitchGql.getChannel(login=self.channel.login).finished.connect(self._processChannelRefreshResult)
 
-    def _processChannelRefreshResult(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _processChannelRefreshResult(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self.showChannel(response.getData())
         else:
-            if isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+            if isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
                 Utils.info("error", "#Channel not found. Deleted or temporary error.", parent=self)
             else:
                 Utils.info(*Messages.INFO.NETWORK_ERROR, parent=self)
         self._ui.refreshChannelButton.setEnabled(True)
 
-    def showChannel(self, channel: TwitchGQLModels.Channel) -> None:
+    def showChannel(self, channel: TwitchGqlModels.Channel) -> None:
         self.channel = channel
         self.setWindowTitle(self.channel.displayName)
         self._ui.windowTitleLabel.setText(T("#{channel}'s channel", channel=self.channel.displayName))
@@ -180,26 +180,26 @@ class SearchResult(QtWidgets.QWidget):
         self.setLoading(True)
         if self.SEARCH_TYPES[self._ui.searchType.currentIndex()][0] == "clips":
             filter = self.FILTER_LIST[self._ui.sortOrFilter.currentIndex()][1]
-            App.TwitchGQL.getChannelClips(channel=self.channel.login, filter=filter, cursor=cursor).finished.connect(self._processSearchResult)
+            App.TwitchGql.getChannelClips(channel=self.channel.login, filter=filter, cursor=cursor).finished.connect(self._processSearchResult)
         else:
             videoType = self.SEARCH_TYPES[self._ui.searchType.currentIndex()][1]
             sort = self.SORT_LIST[self._ui.sortOrFilter.currentIndex()][1]
-            App.TwitchGQL.getChannelVideos(channel=self.channel.login, videoType=videoType, sort=sort, cursor=cursor).finished.connect(self._processSearchResult)
+            App.TwitchGql.getChannelVideos(channel=self.channel.login, videoType=videoType, sort=sort, cursor=cursor).finished.connect(self._processSearchResult)
 
-    def _processSearchResult(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _processSearchResult(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self.searchResult = response.getData()
             self.addVideos(self.searchResult.data)
             self.setLoading(False)
         else:
             self.setLoading(False, showErrorMessage=True)
-            if isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+            if isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
                 Utils.info("error", "#Channel not found. Deleted or temporary error.", parent=self)
             else:
                 Utils.info(*Messages.INFO.NETWORK_ERROR, parent=self)
 
     def searchMoreVideos(self, value: int) -> None:
-        if type(self.data) != TwitchGQLModels.Channel:
+        if type(self.data) != TwitchGqlModels.Channel:
             return
         if self.isLoading():
             return
@@ -207,7 +207,7 @@ class SearchResult(QtWidgets.QWidget):
             if self._ui.videoArea.verticalScrollBar().maximum() - self.SEARCH_SCROLL_THRESHOLD <= value:
                 self.searchVideos(self.searchResult.cursor)
 
-    def addVideos(self, videos: list[TwitchGQLModels.Video | TwitchGQLModels.Clip]) -> None:
+    def addVideos(self, videos: list[TwitchGqlModels.Video | TwitchGqlModels.Clip]) -> None:
         self._widgetListViewer.setAutoReloadEnabled(False)
         for data in videos:
             videoDownloadWidget = Ui.VideoDownloadWidget(data, resizable=False, parent=None)

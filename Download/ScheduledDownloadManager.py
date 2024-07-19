@@ -1,8 +1,8 @@
 from Core import App
 from Core.GlobalExceptions import Exceptions
 from Services.Utils.Utils import Utils
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql import TwitchGqlModels
 from Services.Twitch.Playback import TwitchPlaybackGenerator
 from Services.Twitch.Playback import TwitchPlaybackModels
 from Services.Twitch.PubSub.TwitchPubSub import PubSubEvent
@@ -191,11 +191,11 @@ class ScheduledDownload(QtCore.QObject):
             self._updatingChannelData = True
             self.channelDataUpdateStarted.emit()
             if self.isChannelRetrieved():
-                App.TwitchGQL.getChannel(id=self.channel.id).finished.connect(self._channelDataUpdateResult)
+                App.TwitchGql.getChannel(id=self.channel.id).finished.connect(self._channelDataUpdateResult)
             else:
-                App.TwitchGQL.getChannel(login=self.preset.channel).finished.connect(self._channelDataUpdateResult)
+                App.TwitchGql.getChannel(login=self.preset.channel).finished.connect(self._channelDataUpdateResult)
 
-    def _channelDataUpdateResult(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _channelDataUpdateResult(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             isFirst = not self.isChannelRetrieved()
             self.channel = response.getData()
@@ -209,7 +209,7 @@ class ScheduledDownload(QtCore.QObject):
 
     def setOnline(self) -> None:
         if self.isOffline():
-            self.channel.stream = TwitchGQLModels.Stream({
+            self.channel.stream = TwitchGqlModels.Stream({
                 "title": self.channel.lastBroadcast.title,
                 "previewImageURL": "" if self.channel.login == "" else self.STREAM_PREVIEW_IMAGE_URL_FORMAT.format(login=self.channel.login),
                 "broadcaster": {
@@ -262,7 +262,7 @@ class ScheduledDownload(QtCore.QObject):
                     "boxArtURL": self.GAME_BOX_ART_URL_FORMAT.format(id=data["game_id"]),
                     "displayName": data["game"]
                 }
-            self.channel.lastBroadcast.game = TwitchGQLModels.Game(gameData)
+            self.channel.lastBroadcast.game = TwitchGqlModels.Game(gameData)
             if self.isOnline():
                 self.channel.stream.title = self.channel.lastBroadcast.title
                 self.channel.stream.game = self.channel.lastBroadcast.game

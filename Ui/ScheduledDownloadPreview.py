@@ -1,6 +1,6 @@
 from Core.Ui import *
 from Services.Messages import Messages
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from Download.Downloader.Core.StreamDownloader import StreamDownloader
 from Download import ScheduledDownloadPreset
 from Ui.Components.Widgets.WidgetRemoveController import WidgetRemoveController
@@ -130,7 +130,7 @@ class ScheduledDownloadPreview(QtWidgets.QWidget):
 
     def _showChannel(self) -> None:
         if self.scheduledDownload.channel == None:
-            target = TwitchGQLModels.Channel({"displayName": self.scheduledDownload.preset.channel})
+            target = TwitchGqlModels.Channel({"displayName": self.scheduledDownload.preset.channel})
         elif self.scheduledDownload.channel.stream == None:
             target = self.scheduledDownload.channel
         else:
@@ -138,7 +138,7 @@ class ScheduledDownloadPreview(QtWidgets.QWidget):
         if self._downloader == None:
             self._ui.downloadViewControlBar.showContentInfo(target)
             self._ui.downloaderView.updateContentInfo(target, immediateRefresh=False)
-        elif isinstance(target, TwitchGQLModels.Stream):
+        elif isinstance(target, TwitchGqlModels.Stream):
             downloadInfo = self._downloader.downloadInfo.copy()
             downloadInfo.updateContent(target)
             self._ui.downloadViewControlBar.showDownloadInfo(downloadInfo)

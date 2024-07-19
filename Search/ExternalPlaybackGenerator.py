@@ -3,7 +3,7 @@ from Core.GlobalExceptions import Exceptions
 from Services.Playlist.VariantPlaylistReader import VariantPlaylistReader
 from Services.Playlist.Resolution import Resolution
 from Services.Playlist.Playlist import Playlist
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from Services.Twitch.Playback import TwitchPlaybackModels
 
 from PyQt6 import QtCore, QtNetwork
@@ -15,12 +15,12 @@ class ExternalPlayback:
 
 class ExternalStreamPlayback(TwitchPlaybackModels.TwitchStreamPlayback, ExternalPlayback):
     def __init__(self, resolutions: dict[str, Resolution]):
-        super().__init__("", TwitchGQLModels.StreamPlaybackAccessToken({}), resolutions)
+        super().__init__("", TwitchGqlModels.StreamPlaybackAccessToken({}), resolutions)
 
 
 class ExternalVideoPlayback(TwitchPlaybackModels.TwitchVideoPlayback, ExternalPlayback):
     def __init__(self, resolutions: dict[str, Resolution], totalMilliseconds: int):
-        super().__init__("", TwitchGQLModels.VideoPlaybackAccessToken({}), resolutions)
+        super().__init__("", TwitchGqlModels.VideoPlaybackAccessToken({}), resolutions)
         self.totalMilliseconds = totalMilliseconds
 
     @property

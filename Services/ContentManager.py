@@ -1,5 +1,5 @@
 from Core import App
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 
 from PyQt6 import QtCore
 
@@ -11,7 +11,7 @@ class RestrictionType:
 
 class Exceptions:
     class RestrictedContent(Exception):
-        def __init__(self, channel: TwitchGQLModels.User, contentType: str, content: TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip, restrictionType: RestrictionType.CONTENT_TYPE | RestrictionType.CONTENT_ID, reason: str):
+        def __init__(self, channel: TwitchGqlModels.User, contentType: str, content: TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip, restrictionType: RestrictionType.CONTENT_TYPE | RestrictionType.CONTENT_ID, reason: str):
             self.channel = channel
             self.contentType = contentType
             self.content = content
@@ -36,11 +36,11 @@ class ContentManager(QtCore.QObject):
         self.restrictions = restrictions
         self.restrictionsUpdated.emit()
 
-    def createPayload(self, content: TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip) -> dict:
-        if type(content) == TwitchGQLModels.Stream:
+    def createPayload(self, content: TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip) -> dict:
+        if type(content) == TwitchGqlModels.Stream:
             contentType = "stream"
             channel = content.broadcaster
-        elif type(content) == TwitchGQLModels.Video:
+        elif type(content) == TwitchGqlModels.Video:
             contentType = "video"
             channel = content.owner
         else:
@@ -84,14 +84,14 @@ class ContentManager(QtCore.QObject):
                         )
         return self.createRestrictionData(payload["content"]["id"])
 
-    def checkRestriction(self, content: TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip) -> None:
+    def checkRestriction(self, content: TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip) -> None:
         payload = self.createPayload(content)
         response = self.generateResponse(payload)
         if response["restriction"] != None:
-            if type(content) == TwitchGQLModels.Stream:
+            if type(content) == TwitchGqlModels.Stream:
                 contentType = "stream"
                 channel = content.broadcaster
-            elif type(content) == TwitchGQLModels.Video:
+            elif type(content) == TwitchGqlModels.Video:
                 contentType = "video"
                 channel = content.owner
             else:
@@ -105,7 +105,7 @@ class ContentManager(QtCore.QObject):
                 response["restriction"]["reason"]
             )
 
-    def checkRestrictions(self, contents: list[TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip]) -> list[Exceptions.RestrictedContent]:
+    def checkRestrictions(self, contents: list[TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip]) -> list[Exceptions.RestrictedContent]:
         contentData = {content.id: content for content in contents}
         payload = [self.createPayload(content) for content in contents]
         response = [self.generateResponse(data) for data in payload]
@@ -113,10 +113,10 @@ class ContentManager(QtCore.QObject):
         for data in response:
             if data["restriction"] != None:
                 content = contentData.get(data["content"])
-                if type(content) == TwitchGQLModels.Stream:
+                if type(content) == TwitchGqlModels.Stream:
                     contentType = "stream"
                     channel = content.broadcaster
-                elif type(content) == TwitchGQLModels.Video:
+                elif type(content) == TwitchGqlModels.Video:
                     contentType = "video"
                     channel = content.owner
                 else:

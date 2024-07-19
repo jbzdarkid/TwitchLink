@@ -30,7 +30,7 @@ class ThemeManager(QtCore.QObject):
             return self.value
 
         @classmethod
-        def fromString(cls, value: str) -> typing.Self | None:
+        def fromString(cls, value: str): # -> typing.Self | None:
             for member in cls:
                 if member.value == value:
                     return member

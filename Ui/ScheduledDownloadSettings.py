@@ -1,6 +1,6 @@
 from Core.Ui import *
 from Services.Playlist.Resolution import Resolution
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from Search.QueryParser import TwitchQueryParser
 from Download.ScheduledDownloadPreset import ScheduledDownloadPreset
 from Ui.Components.Utils.FileNameGenerator import FileNameGenerator
@@ -113,8 +113,8 @@ class ScheduledDownloadSettings(QtWidgets.QDialog, WindowGeometryManager):
         concatInfo = T("#[Concat]\n\nThis feature enables you to store Transport Stream file in its original form, without any conversion to ensure its compatibility with standard players.\nSince these files are typically designed for streaming, they may not play correctly on certain players.\nAdditionally, if commercials are broadcast during a live stream or parts are missing due to network issues, some players might not play the video correctly.")
         Utils.info("information", f"{remuxInfo}\n\n\n{concatInfo}", contentTranslate=False, parent=self)
 
-    def createPreviewStream(self) -> TwitchGQLModels.Stream:
-        return TwitchGQLModels.Stream({
+    def createPreviewStream(self) -> TwitchGqlModels.Stream:
+        return TwitchGqlModels.Stream({
             "id": "0",
             "title": "Stream Title",
             "game": {

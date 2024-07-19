@@ -23,7 +23,7 @@ class TimeUtils:
         return datetime
 
 
-class TwitchGQLObject(Serializable):
+class TwitchGqlObject(Serializable):
     @classmethod
     def __model__(cls, data):
         return cls({})
@@ -34,7 +34,7 @@ class TwitchGQLObject(Serializable):
     def __repr__(self):
         return self.__str__()
 
-class User(TwitchGQLObject):
+class User(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.login: str = data.get("login") or ""
@@ -73,14 +73,14 @@ class Channel(User):
             setattr(user, key, getattr(self, key))
         return user
 
-class Broadcast(TwitchGQLObject):
+class Broadcast(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.title: str = DataUtils.cleanString(data.get("title") or "")
         self.game: Game = Game(data.get("game") or {})
         self.startedAt: QtCore.QDateTime = TimeUtils.Datetime(data.get("startedAt"))
 
-class Stream(TwitchGQLObject):
+class Stream(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.title: str = DataUtils.cleanString(data.get("title") or "")
@@ -97,7 +97,7 @@ class Stream(TwitchGQLObject):
     def isRerun(self) -> bool:
         return self.type == "rerun"
 
-class Video(TwitchGQLObject):
+class Video(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.title: str = DataUtils.cleanString(data.get("title") or "")
@@ -115,7 +115,7 @@ class Video(TwitchGQLObject):
         seconds = int(self.lengthSeconds)
         return f"{seconds // 3600:02}:{seconds % 3600 // 60:02}:{seconds % 3600 % 60:02}"
 
-class Clip(TwitchGQLObject):
+class Clip(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.title: str = DataUtils.cleanString(data.get("title") or "")
@@ -134,14 +134,14 @@ class Clip(TwitchGQLObject):
         seconds = int(self.durationSeconds)
         return f"{seconds // 3600:02}:{seconds % 3600 // 60:02}:{seconds % 3600 % 60:02}"
 
-class Game(TwitchGQLObject):
+class Game(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.name: str = data.get("name") or ""
         self.boxArtURL: str = data.get("boxArtURL") or ""
         self.displayName: str = data.get("displayName", self.name)
 
-class StreamPlaybackAccessToken(TwitchGQLObject):
+class StreamPlaybackAccessToken(TwitchGqlObject):
     def __init__(self, data: dict):
         self.signature: str = data.get("signature") or ""
         self.value: str = data.get("value") or ""
@@ -171,12 +171,12 @@ class StreamPlaybackAccessToken(TwitchGQLObject):
     def getGeoBlockReason(self) -> str | None:
         return self.tokenData.get("geoblock_reason") if self.geoBlock else None
 
-class VideoPlaybackAccessToken(TwitchGQLObject):
+class VideoPlaybackAccessToken(TwitchGqlObject):
     def __init__(self, data: dict):
         self.signature: str = data.get("signature") or ""
         self.value: str = data.get("value") or ""
 
-class ClipPlaybackAccessToken(TwitchGQLObject):
+class ClipPlaybackAccessToken(TwitchGqlObject):
     def __init__(self, data: dict):
         self.id: str = data.get("id", "")
         self.videoQualities: list[dict] = data.get("videoQualities")

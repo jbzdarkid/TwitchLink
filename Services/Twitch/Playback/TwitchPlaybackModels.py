@@ -1,4 +1,4 @@
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from Services.Playlist.Resolution import Resolution
 from AppData.EncoderDecoder import Serializable
 
@@ -15,7 +15,7 @@ class TwitchPlaybackObject(Serializable):
 
 
 class TwitchStreamPlayback(TwitchPlaybackObject):
-    def __init__(self, login: str, token: TwitchGQLModels.StreamPlaybackAccessToken, resolutions: dict[str, Resolution]):
+    def __init__(self, login: str, token: TwitchGqlModels.StreamPlaybackAccessToken, resolutions: dict[str, Resolution]):
         self.login = login
         self.token = token
         self.resolutions = resolutions
@@ -31,7 +31,7 @@ class TwitchStreamPlayback(TwitchPlaybackObject):
 
 
 class TwitchVideoPlayback(TwitchPlaybackObject):
-    def __init__(self, id: str, token: TwitchGQLModels.VideoPlaybackAccessToken, resolutions: dict[str, Resolution]):
+    def __init__(self, id: str, token: TwitchGqlModels.VideoPlaybackAccessToken, resolutions: dict[str, Resolution]):
         self.id = id
         self.token = token
         self.resolutions = resolutions
@@ -47,7 +47,7 @@ class TwitchVideoPlayback(TwitchPlaybackObject):
 
 
 class TwitchClipPlayback(TwitchPlaybackObject):
-    def __init__(self, slug: str, token: TwitchGQLModels.ClipPlaybackAccessToken, resolutions: dict[str, Resolution]):
+    def __init__(self, slug: str, token: TwitchGqlModels.ClipPlaybackAccessToken, resolutions: dict[str, Resolution]):
         self.slug = slug
         self.token = token
         self.resolutions = resolutions

@@ -1,8 +1,8 @@
 from Core.Ui import *
 from Services.Messages import Messages
 from Services import ContentManager
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql import TwitchGqlModels
 from Services.Twitch.Playback import TwitchPlaybackGenerator
 from Services.Twitch.Playback import TwitchPlaybackModels
 from Download.DownloadInfo import DownloadInfo
@@ -11,7 +11,7 @@ from Download.DownloadInfo import DownloadInfo
 class DownloadButton(QtCore.QObject):
     accountPageShowRequested = QtCore.pyqtSignal()
 
-    def __init__(self, content: TwitchGQLModels.Channel | TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip, button: QtWidgets.QPushButton | QtWidgets.QToolButton, buttonIcon: ThemedIcon | None = None, buttonText: str | None = None, parent: QtCore.QObject | None = None):
+    def __init__(self, content: TwitchGqlModels.Channel | TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip, button: QtWidgets.QPushButton | QtWidgets.QToolButton, buttonIcon: ThemedIcon | None = None, buttonText: str | None = None, parent: QtCore.QObject | None = None):
         super().__init__(parent=parent)
         self.button = button
         self.buttonText = buttonText
@@ -19,13 +19,13 @@ class DownloadButton(QtCore.QObject):
         self.showLoading(False)
         if buttonIcon != None:
             Utils.setIconViewer(self.button, buttonIcon)
-        if isinstance(content, TwitchGQLModels.Channel):
+        if isinstance(content, TwitchGqlModels.Channel):
             self.button.setEnabled(False)
-        elif isinstance(content, TwitchGQLModels.Stream):
+        elif isinstance(content, TwitchGqlModels.Stream):
             self.button.clicked.connect(self.downloadStream)
-        elif isinstance(content, TwitchGQLModels.Video):
+        elif isinstance(content, TwitchGqlModels.Video):
             self.button.clicked.connect(self.downloadVideo)
-        elif isinstance(content, TwitchGQLModels.Clip):
+        elif isinstance(content, TwitchGqlModels.Clip):
             self.button.clicked.connect(self.downloadClip)
 
     def info(self, title: str, content: str, titleTranslate: bool = True, contentTranslate: bool = True, buttonText: str | None = None) -> None:
@@ -118,7 +118,7 @@ class DownloadButton(QtCore.QObject):
             self.handleExceptions(generator.getError())
 
     def handleExceptions(self, exception: Exception) -> None:
-        if isinstance(exception, TwitchGQLAPI.Exceptions.AuthorizationError):
+        if isinstance(exception, TwitchGqlAPI.Exceptions.AuthorizationError):
             if App.Account.isLoggedIn():
                 self.info(*Messages.INFO.AUTHENTICATION_ERROR)
             else:

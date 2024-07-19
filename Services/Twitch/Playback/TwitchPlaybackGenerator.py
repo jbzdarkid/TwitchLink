@@ -3,8 +3,8 @@ from .TwitchPlaybackConfig import Config
 
 from Core import App
 from Core import GlobalExceptions
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql import TwitchGqlModels
 from Services.Playlist.VariantPlaylistReader import VariantPlaylistReader
 from Services.Playlist.Resolution import Resolution
 
@@ -79,13 +79,13 @@ class TwitchStreamPlaybackGenerator(QtCore.QObject):
     def __init__(self, login: str, parent: QtCore.QObject | None = None):
         super().__init__(parent=parent)
         self.login = login
-        self.token: TwitchGQLModels.StreamPlaybackAccessToken | None = None
+        self.token: TwitchGqlModels.StreamPlaybackAccessToken | None = None
         self._reply: QtNetwork.QNetworkReply | None = None
         self._error: Exception | None = None
         self._data: TwitchPlaybackModels.TwitchStreamPlayback | None = None
-        App.TwitchGQL.getStreamPlaybackAccessToken(self.login).finished.connect(self._streamPlaybackAccessTokenHandler)
+        App.TwitchGql.getStreamPlaybackAccessToken(self.login).finished.connect(self._streamPlaybackAccessTokenHandler)
 
-    def _streamPlaybackAccessTokenHandler(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _streamPlaybackAccessTokenHandler(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self.token = response.getData()
             try:
@@ -94,7 +94,7 @@ class TwitchStreamPlaybackGenerator(QtCore.QObject):
                 self._raiseException(e)
             else:
                 self._getStreamPlayback()
-        elif isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+        elif isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
             self._raiseException(Exceptions.ChannelNotFound(self.login))
         else:
             self._raiseException(response.getError())
@@ -157,17 +157,17 @@ class TwitchVideoPlaybackGenerator(QtCore.QObject):
     def __init__(self, id: str, parent: QtCore.QObject | None = None):
         super().__init__(parent=parent)
         self.id = id
-        self.token: TwitchGQLModels.VideoPlaybackAccessToken | None = None
+        self.token: TwitchGqlModels.VideoPlaybackAccessToken | None = None
         self._reply: QtNetwork.QNetworkReply | None = None
         self._error: Exception | None = None
         self._data: TwitchPlaybackModels.TwitchVideoPlayback | None = None
-        App.TwitchGQL.getVideoPlaybackAccessToken(self.id).finished.connect(self._videoPlaybackAccessTokenHandler)
+        App.TwitchGql.getVideoPlaybackAccessToken(self.id).finished.connect(self._videoPlaybackAccessTokenHandler)
 
-    def _videoPlaybackAccessTokenHandler(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _videoPlaybackAccessTokenHandler(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self.token = response.getData()
             self._getVideoPlayback()
-        elif isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+        elif isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
             self._raiseException(Exceptions.VideoNotFound(self.id))
         else:
             self._raiseException(response.getError())
@@ -223,16 +223,16 @@ class TwitchClipPlaybackGenerator(QtCore.QObject):
     def __init__(self, slug: str, parent: QtCore.QObject | None = None):
         super().__init__(parent=parent)
         self.slug = slug
-        self.token: TwitchGQLModels.ClipPlaybackAccessToken | None = None
+        self.token: TwitchGqlModels.ClipPlaybackAccessToken | None = None
         self._error: Exception | None = None
         self._data: TwitchPlaybackModels.TwitchClipPlayback | None = None
-        App.TwitchGQL.getClipPlaybackAccessToken(self.slug).finished.connect(self._clipPlaybackAccessTokenHandler)
+        App.TwitchGql.getClipPlaybackAccessToken(self.slug).finished.connect(self._clipPlaybackAccessTokenHandler)
 
-    def _clipPlaybackAccessTokenHandler(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _clipPlaybackAccessTokenHandler(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self.token = response.getData()
             self._getClipPlayback()
-        elif isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+        elif isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
             self._raiseException(Exceptions.ClipNotFound(self.slug))
         else:
             self._raiseException(response.getError())

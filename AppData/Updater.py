@@ -50,7 +50,7 @@ class Updaters:
                             "displayName": data["account"]["_account"]["data"]["displayName"],
                             "profileImageURL": data["account"]["_account"]["data"]["profileImageURL"],
                             "createdAt": data["account"]["_account"]["data"]["createdAt"],
-                            "__type__": "obj:Services.Twitch.GQL.TwitchGQLModels:User"
+                            "__type__": "obj:Services.Twitch.Gql.TwitchGqlModels:User"
                         },
                         {
                             "value": data["account"]["_account"]["token"],

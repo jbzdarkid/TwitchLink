@@ -272,7 +272,7 @@ class Updater(QtCore.QObject):
             from Services.Temp.Config import Config as TempConfig
             from Services.Logging.Config import Config as LogConfig
             from Services.Twitch.Authentication.Integrity.IntegrityConfig import Config as IntegrityConfig
-            from Services.Twitch.GQL.TwitchGQLConfig import Config as GQLConfig
+            from Services.Twitch.Gql.TwitchGqlConfig import Config as GQLConfig
             from Services.Twitch.Playback.TwitchPlaybackConfig import Config as PlaybackConfig
             from Services.Twitch.PubSub.TwitchPubSubConfig import Config as PubSubConfig
             from Search.Config import Config as SearchConfig

@@ -1,5 +1,5 @@
 from Core.Ui import *
-from Services.Twitch.GQL.TwitchGQLModels import Channel, Stream, Video, Clip
+from Services.Twitch.Gql.TwitchGqlModels import Channel, Stream, Video, Clip
 from Ui.Components.Utils.VideoWidgetImageSaver import VideoWidgetImageSaver
 from Ui.Components.Widgets.DownloadButton import DownloadButton
 from Ui.Components.Widgets.InstantDownloadButton import InstantDownloadButton

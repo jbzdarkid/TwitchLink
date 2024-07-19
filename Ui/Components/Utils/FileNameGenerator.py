@@ -2,7 +2,7 @@ from Core import App
 from Core.App import T
 from Services.Utils.Utils import Utils
 from Services.Playlist.Resolution import Resolution
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 
 from PyQt6 import QtCore
 
@@ -16,7 +16,7 @@ class FileNameGenerator:
         return formData
 
     @staticmethod
-    def getBaseVariables(contentType: str, content: TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip) -> dict[str, str]:
+    def getBaseVariables(contentType: str, content: TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip) -> dict[str, str]:
         return {
             "type": T(contentType),
             "id": content.id,
@@ -25,7 +25,7 @@ class FileNameGenerator:
         }
 
     @staticmethod
-    def getUserVariables(name: str, user: TwitchGQLModels.User) -> dict[str, str]:
+    def getUserVariables(name: str, user: TwitchGqlModels.User) -> dict[str, str]:
         return {
             name: user.login,
             f"{name}_name": user.displayName,
@@ -55,7 +55,7 @@ class FileNameGenerator:
         }
 
     @classmethod
-    def getStreamFileNameTemplateVariables(cls, stream: TwitchGQLModels.Stream, resolutionText: str) -> dict[str, str]:
+    def getStreamFileNameTemplateVariables(cls, stream: TwitchGqlModels.Stream, resolutionText: str) -> dict[str, str]:
         return cls.combineFormData(
             cls.getBaseVariables("stream", stream),
             cls.getUserVariables("channel", stream.broadcaster),
@@ -64,7 +64,7 @@ class FileNameGenerator:
         )
 
     @classmethod
-    def getVideoFileNameTemplateVariables(cls, video: TwitchGQLModels.Video, resolutionText: str) -> dict[str, str]:
+    def getVideoFileNameTemplateVariables(cls, video: TwitchGqlModels.Video, resolutionText: str) -> dict[str, str]:
         return cls.combineFormData(
             cls.getBaseVariables("video", video),
             cls.getUserVariables("channel", video.owner),
@@ -79,7 +79,7 @@ class FileNameGenerator:
         )
 
     @classmethod
-    def getClipFileNameTemplateVariables(cls, clip: TwitchGQLModels.Clip, resolutionText: str) -> dict[str, str]:
+    def getClipFileNameTemplateVariables(cls, clip: TwitchGqlModels.Clip, resolutionText: str) -> dict[str, str]:
         return cls.combineFormData(
             cls.getBaseVariables("clip", clip),
             {
@@ -110,12 +110,12 @@ class FileNameGenerator:
         return App.Preferences.templates.getClipFilename()
 
     @classmethod
-    def generateFileName(cls, content: TwitchGQLModels.Stream | TwitchGQLModels.Video | TwitchGQLModels.Clip, resolution: Resolution | None = None, filenameTemplate: str | None = None) -> str:
+    def generateFileName(cls, content: TwitchGqlModels.Stream | TwitchGqlModels.Video | TwitchGqlModels.Clip, resolution: Resolution | None = None, filenameTemplate: str | None = None) -> str:
         resolutionText = T("unknown") if resolution == None else cls.generateResolutionName(resolution)
-        if isinstance(content, TwitchGQLModels.Stream):
+        if isinstance(content, TwitchGqlModels.Stream):
             defaultFilenameTemplate = cls.getStreamFileNameTemplate()
             variables = cls.getStreamFileNameTemplateVariables(content, resolutionText)
-        elif isinstance(content, TwitchGQLModels.Video):
+        elif isinstance(content, TwitchGqlModels.Video):
             defaultFilenameTemplate = cls.getVideoFileNameTemplate()
             variables = cls.getVideoFileNameTemplateVariables(content, resolutionText)
         else:

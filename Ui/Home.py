@@ -1,6 +1,6 @@
 from Core.Ui import *
 from Services.Messages import Messages
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from Search.SearchMode import SearchMode
 from Search import ExternalPlaybackGenerator
 from Download.DownloadInfo import DownloadInfo
@@ -37,12 +37,12 @@ class Home(QtWidgets.QWidget):
         search.searchCompleted.connect(self.searchCompleted, QtCore.Qt.ConnectionType.QueuedConnection)
         search.exec()
 
-    def searchCompleted(self, result: TwitchGQLModels.Channel | TwitchGQLModels.Video | TwitchGQLModels.Clip | ExternalPlaybackGenerator.ExternalPlayback) -> None:
+    def searchCompleted(self, result: TwitchGqlModels.Channel | TwitchGqlModels.Video | TwitchGqlModels.Clip | ExternalPlaybackGenerator.ExternalPlayback) -> None:
         if isinstance(result, ExternalPlaybackGenerator.ExternalPlayback):
             if isinstance(result, ExternalPlaybackGenerator.ExternalStreamPlayback):
-                data = TwitchGQLModels.Stream({"title": "Unknown Stream", "game": {"name": "Unknown"}, "broadcaster": {"login": "Unknown User"}})
+                data = TwitchGqlModels.Stream({"title": "Unknown Stream", "game": {"name": "Unknown"}, "broadcaster": {"login": "Unknown User"}})
             else:
-                data = TwitchGQLModels.Video({"title": "Unknown Video", "game": {"name": "Unknown"}, "owner": {"login": "Unknown User"}, "lengthSeconds": result.totalSeconds})
+                data = TwitchGqlModels.Video({"title": "Unknown Video", "game": {"name": "Unknown"}, "owner": {"login": "Unknown User"}, "lengthSeconds": result.totalSeconds})
             downloadMenu = Ui.DownloadMenu(DownloadInfo(data, result), parent=self)
             downloadMenu.downloadRequested.connect(self.startDownload, QtCore.Qt.ConnectionType.QueuedConnection)
             downloadMenu.exec()

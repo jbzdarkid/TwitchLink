@@ -1,6 +1,6 @@
 from Core.Ui import *
 from Services.Messages import Messages
-from Services.Twitch.GQL.TwitchGQLModels import Channel, Stream, Video, Clip
+from Services.Twitch.Gql.TwitchGqlModels import Channel, Stream, Video, Clip
 from Download.History import DownloadOptionHistory
 from Ui.Components.Utils.FileNameGenerator import FileNameGenerator
 

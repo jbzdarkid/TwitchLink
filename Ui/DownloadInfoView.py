@@ -1,5 +1,5 @@
 from Core.Ui import *
-from Services.Twitch.GQL.TwitchGQLModels import Channel, Stream, Video, Clip
+from Services.Twitch.Gql.TwitchGqlModels import Channel, Stream, Video, Clip
 from Download.DownloadInfo import DownloadInfo
 from Ui.Components.Utils.FileNameGenerator import FileNameGenerator
 

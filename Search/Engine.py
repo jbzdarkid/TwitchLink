@@ -4,8 +4,8 @@ from . import ExternalPlaybackGenerator
 
 from Core import App
 from Core import GlobalExceptions
-from Services.Twitch.GQL import TwitchGQLAPI
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlAPI
+from Services.Twitch.Gql import TwitchGqlModels
 
 from PyQt6 import QtCore
 
@@ -42,7 +42,7 @@ class SearchEngine(QtCore.QObject):
         self._searchExternalContent = searchExternalContent
         self._multipleSearch: list[tuple[SearchMode, str]] | None = None
         self._error: Exception | None = None
-        self._data: TwitchGQLModels.Channel | TwitchGQLModels.Video | TwitchGQLModels.Clip | ExternalPlaybackGenerator.ExternalPlayback | None = None
+        self._data: TwitchGqlModels.Channel | TwitchGqlModels.Video | TwitchGqlModels.Clip | ExternalPlaybackGenerator.ExternalPlayback | None = None
         self._parseQuery()
 
     def _parseQuery(self) -> None:
@@ -56,17 +56,17 @@ class SearchEngine(QtCore.QObject):
         if self._multipleSearch != None:
             self._mode, self._query = self._multipleSearch.pop(0)
         if self._mode.isChannel():
-            App.TwitchGQL.getChannel(login=self._query).finished.connect(self._searchFinished)
+            App.TwitchGql.getChannel(login=self._query).finished.connect(self._searchFinished)
         elif self._mode.isVideo():
-            App.TwitchGQL.getVideo(id=self._query).finished.connect(self._searchFinished)
+            App.TwitchGql.getVideo(id=self._query).finished.connect(self._searchFinished)
         elif self._mode.isClip():
-            App.TwitchGQL.getClip(slug=self._query).finished.connect(self._searchFinished)
+            App.TwitchGql.getClip(slug=self._query).finished.connect(self._searchFinished)
         elif self._searchExternalContent:
             ExternalPlaybackGenerator.ExternalPlaybackGenerator(QtCore.QUrl(self._query), parent=self).finished.connect(self._externalPlaybackSearchFinished)
         else:
             self._raiseException(Exceptions.InvalidURL())
 
-    def _searchFinished(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _searchFinished(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             self._data = response.getData()
             self._setFinished()
@@ -100,5 +100,5 @@ class SearchEngine(QtCore.QObject):
     def getError(self) -> Exception | None:
         return self._error
 
-    def getData(self) -> TwitchGQLModels.Channel | TwitchGQLModels.Video | TwitchGQLModels.Clip | ExternalPlaybackGenerator.ExternalPlayback:
+    def getData(self) -> TwitchGqlModels.Channel | TwitchGqlModels.Video | TwitchGqlModels.Clip | ExternalPlaybackGenerator.ExternalPlayback:
         return self._data

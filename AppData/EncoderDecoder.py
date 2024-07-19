@@ -72,7 +72,7 @@ class Serializable:
     def __save__(self) -> dict:
         return self.__dict__
 
-    def copy(self) -> typing.Self:
+    def copy(self): # -> typing.Self:
         return Decoder.decode(Encoder.encode(self))
 
 

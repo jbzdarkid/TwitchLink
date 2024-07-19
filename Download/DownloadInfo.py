@@ -1,6 +1,6 @@
 from Core import App
 from Services.Utils.Utils import Utils
-from Services.Twitch.GQL.TwitchGQLModels import Stream, Video, Clip
+from Services.Twitch.Gql.TwitchGqlModels import Stream, Video, Clip
 from Services.Twitch.Playback.TwitchPlaybackModels import TwitchStreamPlayback, TwitchVideoPlayback, TwitchClipPlayback
 from Services.Playlist.Resolution import Resolution
 from Download.History.DownloadOptionHistory import StreamHistory, VideoHistory, ClipHistory

@@ -1,6 +1,6 @@
 from Core import App
 from Services.Twitch.Authentication.OAuth.OAuthToken import OAuthToken
-from Services.Twitch.GQL import TwitchGQLModels
+from Services.Twitch.Gql import TwitchGqlModels
 from AppData.EncoderDecoder import Serializable
 
 from PyQt6 import QtCore
@@ -19,7 +19,7 @@ class TwitchAccount(QtCore.QObject, Serializable):
         super().__init__(parent=parent)
         self.clearData()
 
-    def login(self, user: TwitchGQLModels.User, token: str, expiration: int | None = None) -> None:
+    def login(self, user: TwitchGqlModels.User, token: str, expiration: int | None = None) -> None:
         if self.isLoggedIn():
             self.logout()
         self.user = user
@@ -36,11 +36,11 @@ class TwitchAccount(QtCore.QObject, Serializable):
         self.logout()
         self.authorizationExpired.emit()
 
-    def setData(self, user: TwitchGQLModels.User | None, oAuthToken: OAuthToken | None) -> None:
+    def setData(self, user: TwitchGqlModels.User | None, oAuthToken: OAuthToken | None) -> None:
         self.user = user
         self.oAuthToken = oAuthToken
 
-    def getData(self) -> tuple[TwitchGQLModels.User, OAuthToken]:
+    def getData(self) -> tuple[TwitchGqlModels.User, OAuthToken]:
         return self.user, self.oAuthToken
 
     def clearData(self) -> None:

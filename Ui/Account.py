@@ -1,6 +1,6 @@
 from Core.Ui import *
 from Services.Messages import Messages
-from Services.Twitch.GQL import TwitchGQLAPI
+from Services.Twitch.Gql import TwitchGqlAPI
 from Ui.Components.Widgets.LoginWidget import AccountData
 
 
@@ -34,14 +34,14 @@ class Account(QtWidgets.QWidget):
         App.Account.validateOAuthToken()
         if App.Account.isLoggedIn():
             self.showLoading()
-            App.TwitchGQL.getChannel(id=App.Account.user.id).finished.connect(self._updateAccountDataResultHandler)
+            App.TwitchGql.getChannel(id=App.Account.user.id).finished.connect(self._updateAccountDataResultHandler)
         elif self._tempAccountData != None:
             self.showLoading()
-            App.TwitchGQL.getChannel(login=self._tempAccountData.username).finished.connect(self._updateAccountDataResultHandler)
+            App.TwitchGql.getChannel(login=self._tempAccountData.username).finished.connect(self._updateAccountDataResultHandler)
         else:
             self.showAccount()
 
-    def _updateAccountDataResultHandler(self, response: TwitchGQLAPI.TwitchGQLResponse) -> None:
+    def _updateAccountDataResultHandler(self, response: TwitchGqlAPI.TwitchGqlResponse) -> None:
         if response.getError() == None:
             if self._tempAccountData == None:
                 App.Account.user = response.getData().getUser()
@@ -51,12 +51,12 @@ class Account(QtWidgets.QWidget):
                     token=self._tempAccountData.token,
                     expiration=self._tempAccountData.expiration
                 )
-        elif isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+        elif isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
             App.Account.invalidate()
         self._tempAccountData = None
         self.showAccount()
         if response.getError() != None:
-            if not isinstance(response.getError(), TwitchGQLAPI.Exceptions.DataNotFound):
+            if not isinstance(response.getError(), TwitchGqlAPI.Exceptions.DataNotFound):
                 Utils.info("network-error", "#A network error occurred while loading your account data.", parent=self)
 
     def showAccount(self) -> None:
